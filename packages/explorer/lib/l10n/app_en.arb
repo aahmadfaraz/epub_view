@@ -1,0 +1,7 @@
+{
+  "title": "Hello World",
+  "@title": {
+    "description": "The title of the application",
+    "type": "text"
+  }
+}

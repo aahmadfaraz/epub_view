@@ -101,10 +101,12 @@ class _EpubViewState extends State<EpubView> {
       return true;
     }
     _chapters = parseChapters(_controller._document!);
-    final parseParagraphsResult =
-        parseParagraphs(_chapters, _controller._document!.Content);
+    final parseParagraphsResult = parseParagraphs(_chapters, _controller._document!.Content);
     _paragraphs = parseParagraphsResult.flatParagraphs;
     _chapterIndexes.addAll(parseParagraphsResult.chapterIndexes);
+
+    //! Updated the total indexes count
+    _controller._totalIndexes = _paragraphs.length;
 
     _epubCfiReader = EpubCfiReader.parser(
       cfiInput: _controller.epubCfi,
@@ -118,8 +120,7 @@ class _EpubViewState extends State<EpubView> {
   }
 
   void _changeListener() {
-    if (_paragraphs.isEmpty ||
-        _itemPositionListener!.itemPositions.value.isEmpty) {
+    if (_paragraphs.isEmpty || _itemPositionListener!.itemPositions.value.isEmpty) {
       return;
     }
     final position = _itemPositionListener!.itemPositions.value.first;
@@ -200,12 +201,10 @@ class _EpubViewState extends State<EpubView> {
       return;
     } else {
       final paragraph = _paragraphByIdRef(hrefIdRef);
-      final chapter =
-          paragraph != null ? _chapters[paragraph.chapterIndex] : null;
+      final chapter = paragraph != null ? _chapters[paragraph.chapterIndex] : null;
 
       if (chapter != null && paragraph != null) {
-        final paragraphIndex =
-            _epubCfiReader?.getParagraphIndexByElement(paragraph.element);
+        final paragraphIndex = _epubCfiReader?.getParagraphIndexByElement(paragraph.element);
         final cfi = _epubCfiReader?.generateCfi(
           book: _controller._document,
           chapter: chapter,
@@ -219,18 +218,15 @@ class _EpubViewState extends State<EpubView> {
     }
   }
 
-  Paragraph? _paragraphByIdRef(String idRef) =>
-      _paragraphs.firstWhereOrNull((paragraph) {
+  Paragraph? _paragraphByIdRef(String idRef) => _paragraphs.firstWhereOrNull((paragraph) {
         if (paragraph.element.id == idRef) {
           return true;
         }
 
-        return paragraph.element.children.isNotEmpty &&
-            paragraph.element.children[0].id == idRef;
+        return paragraph.element.children.isNotEmpty && paragraph.element.children[0].id == idRef;
       });
 
-  EpubChapter? _chapterByFileName(String? fileName) =>
-      _chapters.firstWhereOrNull((chapter) {
+  EpubChapter? _chapterByFileName(String? fileName) => _chapters.firstWhereOrNull((chapter) {
         if (fileName != null) {
           if (chapter.ContentFileName!.contains(fileName)) {
             return true;
@@ -289,10 +285,7 @@ class _EpubViewState extends State<EpubView> {
     double? leadingEdge,
   }) {
     int posIndex = positionIndex;
-    if (trailingEdge != null &&
-        leadingEdge != null &&
-        trailingEdge < _minTrailingEdge &&
-        leadingEdge < _minLeadingEdge) {
+    if (trailingEdge != null && leadingEdge != null && trailingEdge < _minTrailingEdge && leadingEdge < _minLeadingEdge) {
       posIndex += 1;
     }
 
@@ -336,8 +329,7 @@ class _EpubViewState extends State<EpubView> {
 
     return Column(
       children: <Widget>[
-        if (chapterIndex >= 0 && paragraphIndex == 0)
-          builders.chapterDividerBuilder(chapters[chapterIndex]),
+        if (chapterIndex >= 0 && paragraphIndex == 0) builders.chapterDividerBuilder(chapters[chapterIndex]),
         Html(
           data: paragraphs[index].element.outerHtml,
           onLinkTap: (href, _, __) => onExternalLinkPressed(href!),
@@ -355,10 +347,8 @@ class _EpubViewState extends State<EpubView> {
             TagExtension(
               tagsToExtend: {"img"},
               builder: (imageContext) {
-                final url =
-                    imageContext.attributes['src']!.replaceAll('../', '');
-                final content = Uint8List.fromList(
-                    document.Content!.Images![url]!.Content!);
+                final url = imageContext.attributes['src']!.replaceAll('../', '');
+                final content = Uint8List.fromList(document.Content!.Images![url]!.Content!);
                 return Image(
                   image: MemoryImage(content),
                 );
@@ -412,8 +402,7 @@ class _EpubViewState extends State<EpubView> {
             key: const Key('epubx.root.error'),
             child: Padding(
               padding: const EdgeInsets.all(32),
-              child: builders.errorBuilder?.call(context, loadingError!) ??
-                  Center(child: Text(loadingError.toString())),
+              child: builders.errorBuilder?.call(context, loadingError!) ?? Center(child: Text(loadingError.toString())),
             ),
           );
         case EpubViewLoadingState.success:
