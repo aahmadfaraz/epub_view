@@ -3,6 +3,7 @@ description: Flutter widget for view EPUB documents on on Web, MacOs, Android an
 repository: https://github.com/ScerIO/packages.flutter/tree/main/packages/epub_view
 issue_tracker: https://github.com/ScerIO/packages.flutter/issues?q=is%3Aissue+is%3Aopen+label%3A%22p%3A+epub_view%22
 version: 3.2.0
+publish_to: none
 
 environment:
   sdk: ">=2.17.1 <4.0.0"
@@ -11,7 +12,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  epubx: ^4.0.0
+
+  epubx:
+    git:
+      url: https://github.com/aahmadfaraz/epubx.git
+      ref: main
+  
   equatable: ^2.0.5
   html: ^0.15.4
   flutter_html: ^3.0.0-beta.2

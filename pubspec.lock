@@ -68,10 +68,11 @@ packages:
   epubx:
     dependency: "direct main"
     description:
-      name: epubx
-      sha256: "0ab9354efa177c4be52c46f857bc15bf83f83a92667fb673465c8f89fca26db3"
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: main
+      resolved-ref: "49a6459226a5a932dde2daf772b8413662226ed5"
+      url: "https://github.com/aahmadfaraz/epubx.git"
+    source: git
     version: "4.0.0"
   equatable:
     dependency: "direct main"
